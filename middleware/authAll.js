@@ -1,4 +1,4 @@
-const { UserModel, DriverModel } = require("../models");
+const { UserModel } = require("../models");
 
 const config = require("../config");
 const jwt = require("jsonwebtoken");

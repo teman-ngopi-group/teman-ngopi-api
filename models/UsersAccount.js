@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const customer = "customer";
+const roles = {
+  Admin: "admin",
+  User: "user",
+};
 
 const usersAcctSchema = new Schema({
   name: {
@@ -33,7 +36,10 @@ const usersAcctSchema = new Schema({
   role: {
     type: String,
     required: true,
-    default: customer,
+    enum: {
+      values: [roles.Admin, roles.User],
+      message: "Please select admin or user"
+    }
   },
   created_at: {
     type: Date,
