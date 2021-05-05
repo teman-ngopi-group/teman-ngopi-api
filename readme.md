@@ -32,5 +32,33 @@ Example command for running it locally :
 ```
 $ npm run dev
 ```
+
+Example running it by kubernetes cluster :
+
+* Dockerizing the project
+    ```
+    $ docker build -t node-crud .
+    ```
+    After build process done, then we can check it by execute the container
+    ```
+    $ docker run -p 8080:8080 node-crud
+    ```
+* Upload the image to docker hub
+    ```
+    $ docker tag node-crud {username}/{repository}
+    ```
+    Then push it into repository
+    ```
+    $ docker push {username}/{repository}
+    ```
+* Start kubernetes cluster
+    ```
+    $ minikube start
+    ```
+    Then back to project folder for creating deployment into kubernetes cluster
+    ```
+    $ kubectl create -f deploy.yaml
+    ```
+
 After the apps running is succesfully, we can start by calling routes. For example :
 
