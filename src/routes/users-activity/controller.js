@@ -5,9 +5,9 @@ let objErr = {};
 
 module.exports = {
   getAllUser: async (req, res) => {
-    try {      
+    try {
       const result = await UserModel.find({})
-        .select("-password")
+        .select("-password -token")
         .sort({ created_at: -1 });
 
       res.status(200).json({
@@ -27,7 +27,7 @@ module.exports = {
     try {
       const result = await UserModel.find({
         _id: objectId(req.params.id),
-      }).select("-password");
+      }).select("-password -token");
 
       res.status(200).json({
         status: 200,
@@ -46,10 +46,9 @@ module.exports = {
     const { id } = req.params;
 
     try {
-      //Mengupdate user dengan dengan mencari user by _id dahulu
       const resultFind = await UserModel.find({
         _id: objectId(id),
-      }).select("-password");
+      }).select("-password -token");
 
       if (!resultFind) {
         objErr.status = 400;
@@ -69,6 +68,35 @@ module.exports = {
         status: 200,
         message: `User succesfully update with id ${id}`,
         data: resultFind,
+      });
+    } catch (error) {
+      console.error("Error occured with message :", error);
+
+      objErr.status = 500;
+      objErr.message = error.message;
+      return handleError(req, res, objErr);
+    }
+  },
+  deleteOneUser: async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      const resultFind = await UserModel.find({
+        _id: objectId(id),
+      }).select("-password -token");
+
+      if (!resultFind) {
+        objErr.status = 400;
+        objErr.message = `User with id ${id} not found`;
+        return handleError(req, res, objErr);
+      }
+
+      const result = await UserModel.deleteOne({ _id: objectId(id) });
+
+      res.status(200).json({
+        status: 200,
+        message: `User succesfully delete with id ${id}`,
+        dataDeleted: resultFind,
       });
     } catch (error) {
       console.error("Error occured with message :", error);
