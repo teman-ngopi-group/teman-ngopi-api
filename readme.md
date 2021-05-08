@@ -71,3 +71,22 @@ Example running it by kubernetes cluster :
 After the apps running is succesfully, we can start by calling routes. For example :
 ![Alt text](./src/assets/img/1.1-home.png "Calling '/' route")
 
+### API Guide And Documentation :
+
+#### /api/auth
+
+| Path            | Method | Description   |
+| :---            | :---:  | :---          |
+| /users/login    | POST   | User login    |
+| /users/register | POST   | User register |
+
+
+#### /api/profile
+
+| Path              | Method | Description                            |
+| :---              | :---:  | :---                                   |
+| /users            | GET    | Show all user that has been registered |
+| /user/:id         | GET    | Show one specific user by id           |
+| /modify/user/:id  | PUT    | Edit one specific user                 |
+| /delete/user/:id  | DELETE | Delete one specific user               |
+
