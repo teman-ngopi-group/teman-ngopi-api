@@ -69,4 +69,5 @@ Example running it by kubernetes cluster :
     ```
 
 After the apps running is succesfully, we can start by calling routes. For example :
+![Alt text](./src/assets/img/1.1-home.png "Calling '/' route")
 

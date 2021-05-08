@@ -14,6 +14,6 @@ spec:
     spec: 
       containers: 
       - name: nodecrud 
-        image: adinugroho13/node-crud-docker 
+        image: adinugroho13/node-crud-docker:2.0
         ports: 
         - containerPort: 8080
