@@ -59,6 +59,14 @@ Example running it by kubernetes cluster :
     ```
     $ kubectl create -f deploy.yaml
     ```
+* Expose deployment
+    ```
+    $ kubectl expose deployment {name_deployment} --type "LoadBalancer"
+    ```
+    We can see, the service has been created
+    ```
+    $ kubectl get svc
+    ```
 
 After the apps running is succesfully, we can start by calling routes. For example :
 
