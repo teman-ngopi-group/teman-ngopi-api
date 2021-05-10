@@ -78,8 +78,6 @@ After the apps running is succesfully, we can start by calling routes. For examp
 | Path            | Method | Description   |
 | :---            | :---:  | :---          |
 | /users/login    | POST   | User login    |
-| /users/register | POST   | User register |
-
 
 #### /api/profile
 
@@ -87,6 +85,23 @@ After the apps running is succesfully, we can start by calling routes. For examp
 | :---              | :---:  | :---                                   |
 | /users            | GET    | Show all user that has been registered |
 | /user/:id         | GET    | Show one specific user by id           |
+| /add/user/        | POST   | Create user                            |
 | /modify/user/:id  | PUT    | Edit one specific user                 |
 | /delete/user/:id  | DELETE | Delete one specific user               |
 
+
+#### 1. Authentication
+
+* ##### User Login
+
+    * Access URL : /api/auth/users/register 
+    * Method     : POST
+    * Parameters :
+    
+        | Name     | Type     | Description       |
+        | ---      | -----    | ----              |
+        | email    | string   | Email of user |
+        | password | string   | Password of user|
+        
+    * Example success response :
+    ![Alt text](./src/assets/img/2-1-custreg.png "Calling '/register' route")

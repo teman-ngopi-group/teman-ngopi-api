@@ -5,6 +5,7 @@ const { authAll } = require("../../../middleware");
 
 router.get("/users", authAll.grantOnlyAdmin, controller.getAllUser);
 router.get("/user/:id", authAll.grantAll, controller.getOneUser);
+router.post("/add/user", authAll.grantOnlyAdmin, controller.userRegister);
 router.put(
   "/modify/user/:id",
   authAll.grantOnlyAdmin,

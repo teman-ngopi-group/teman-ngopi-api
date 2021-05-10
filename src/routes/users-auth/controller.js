@@ -1,49 +1,9 @@
 const { UserModel } = require("../../../models");
-const {
-  hashPassword,
-  comparedPassword,
-  generateToken,
-} = require("../../../helpers");
+const { comparedPassword } = require("../../../helpers");
 
 let objErr = {};
 
 module.exports = {
-  userRegister: async (req, res) => {
-    const hasPass = await hashPassword(req.body.password);
-    const genToken = await generateToken(req.body);
-
-    try {
-      //Check if email already used
-      const userCheckEmail = await UserModel.findOne({ email: req.body.email });
-
-      if (userCheckEmail) {
-        objErr.status = 400;
-        objErr.message = `User with email ${req.body.email} already used`;
-        return handleError(req, res, objErr);
-      }
-
-      //Continue registration process
-      const userRegistration = await UserModel.create({
-        ...req.body,
-        password: hasPass,
-        token: genToken,
-      });
-
-      const { _id, name, email } = userRegistration;
-
-      res.status(201).json({
-        status: 201,
-        message: `User successfully created with id ${userRegistration._id}`,
-        data: { _id, name, email },
-      });
-    } catch (error) {
-      console.error("Error occured with message :", error);
-
-      objErr.status = 500;
-      objErr.message = error.message;
-      return handleError(req, res, objErr);
-    }
-  },
   userLogin: async (req, res) => {
     try {
       await UserModel.findOne({
