@@ -104,4 +104,65 @@ After the apps running is succesfully, we can start by calling routes. For examp
         | password | string   | Password of user|
         
     * Example success response :
-    ![Alt text](./src/assets/img/2-1-custreg.png "Calling '/register' route")
+    ![Alt text](./src/assets/img/1.2-login.png "Calling '/login' route")
+
+#### 2. CRUD Operation
+
+* ##### Show all users list
+
+    * Access URL : /api/profile/users
+    * Method     : GET
+    * Additional : Token of user is needed when execute this endpoint, only admin types are allowed
+    * Example success response :
+    ![Alt text](./src/assets/img/1.2-getusers.png "Calling '/users' route")
+    * Example failed response, cause not admin who execute it :
+    ![Alt text](./src/assets/img/1.2-getusers-erradmin.png "Error routes")
+    * Example failed response, cause without token :
+    ![Alt text](./src/assets/img/1.2-getusers-errtoken.png "Error routes")
+
+* ##### Show one specific user
+
+    * Access URL : /api/profile/user/:id
+    * Method     : GET
+    * Additional : Token of user is needed when execute this endpoint, all of type users are allowed
+    * Example success response :
+    ![Alt text](./src/assets/img/1.2-getspecuser.png "Calling '/user/:id' route")
+    * Example failed response, cause wthout token :
+    ![Alt text](./src/assets/img/1.2-getspecuser-errtoken.png "Error routes")
+
+* ##### Create one user
+
+    * Access URL : /api/profile/add/user
+    * Method     : POST
+    * Additional : Token of user is needed when execute this endpoint, only admin types are allowed
+    * Parameters :
+        | Name        | Type     | Description       |
+        | ---         | -----    | ----              |
+        | name        | string   | Name of user     |
+        | email       | string   | Email of user     |
+        | password    | string   | Password of user  |
+        | phoneNumber | integer   | Phone number of user, only integer type are allowed     |
+        | role        | string   | Role of user, only 'admin' or 'user'  |
+
+    * Example success response :
+    ![Alt text](./src/assets/img/1.2-adduser.png "Calling '/add/user' route")
+    * Example failed response, cause not admin who execute it :
+    ![Alt text](./src/assets/img/1.2-adduser-erradmin.png "Error routes")
+    * Example failed response, cause without token :
+    ![Alt text](./src/assets/img/1.2-adduser-errtoken.png "Error routes")
+
+* ##### Modify one user
+
+    * Access URL : /api/profile/modify/user/:id
+    * Method     : PUT
+    * Additional : Token of user is needed when execute this endpoint, only admin types are allowed
+    * Parameters :
+        | Name        | Type     | Description       |
+        | ---         | -----    | ----              |
+        | name        | string   | Optionally, Name of user     |
+        | email       | string   | Optionally, Email of user     |
+        | password    | string   | Optionally, Password of user  |
+        | phoneNumber | integer  | Optionally, Phone number of user |
+        | role        | string   | Optionally, Role of user  |
+
+    * Example success response :

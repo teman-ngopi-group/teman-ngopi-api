@@ -84,15 +84,6 @@ module.exports = {
     const { id } = req.params;
 
     try {
-      const resultFind = await UserModel.find({
-        _id: objectId(id),
-      }).select("-password -token");
-
-      if (!resultFind) {
-        objErr.status = 400;
-        objErr.message = `User with id ${id} not found`;
-        return handleError(req, res, objErr);
-      }
 
       const result = await UserModel.updateOne(
         { _id: objectId(id) },
@@ -101,6 +92,16 @@ module.exports = {
         },
         { validateBeforeSave: false }
       );
+
+      const resultFind = await UserModel.find({
+        _id: objectId(id),
+      }).select("-password -token");
+
+      if (result.n === 0) {
+        objErr.status = 400;
+        objErr.message = `User with id ${id} not found`;
+        return handleError(req, res, objErr);
+      }
 
       res.status(200).json({
         status: 200,
