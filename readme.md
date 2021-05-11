@@ -113,7 +113,7 @@ After the apps running is succesfully, we can start by calling routes. For examp
 
     * Access URL : /api/profile/test/admin
     * Method     : POST
-    * Additional : All of these user credential test is executing from .env file, so we have to put the test account credential into .env files
+    * Additional : All of these user credential test are executing from .env file, so we have to put the test account credential into .env files
     * Example success response :
     ![Alt text](./src/assets/img/1.2-testadmin.png "Calling '/test/admin' route")
 
