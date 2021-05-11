@@ -95,7 +95,7 @@ After the apps running is succesfully, we can start by calling routes. For examp
 
 * ##### User Login
 
-    * Access URL : /api/auth/users/register 
+    * Access URL : /api/auth/users/login 
     * Method     : POST
     * Parameters :
     
