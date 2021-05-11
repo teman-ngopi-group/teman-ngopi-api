@@ -1,16 +1,68 @@
 const { UserModel } = require("../../../models");
 const { hashPassword, generateToken } = require("../../../helpers");
+const {
+  TEST_ADMIN_EMAIL,
+  TEST_ADMIN_PSW,
+  TEST_ADMIN_NAME,
+  TEST_ADMIN_PHONENUMBER,
+  TEST_ADMIN_ROLE,
+} = require("../../../config");
 
 const objectId = require("mongodb").ObjectId;
 
-let objErr = {};
+let objErr = {},
+  credentialTest = {
+    name: TEST_ADMIN_NAME,
+    email: TEST_ADMIN_EMAIL,
+    phoneNumber: TEST_ADMIN_PHONENUMBER,
+    password: TEST_ADMIN_PSW,
+    role: TEST_ADMIN_ROLE,
+  };
 
 module.exports = {
+  userTestRegister: async (req, res) => {
+    try {
+      const hasPass = await hashPassword(credentialTest.password);
+      const genToken = await generateToken(credentialTest);
+
+      //Check if email already used
+      const userCheckEmail = await UserModel.findOne({
+        email: credentialTest.email,
+      });
+
+      if (userCheckEmail) {
+        objErr.status = 400;
+        objErr.message = `User with email ${credentialTest.email} already used`;
+        return handleError(req, res, objErr);
+      }
+
+      //Continue registration process
+      const userRegistration = await UserModel.create({
+        ...credentialTest,
+        password: hasPass,
+        token: genToken,
+      });
+
+      const { _id, name, email } = userRegistration;
+
+      res.status(201).json({
+        status: 201,
+        message: `User successfully created with id ${userRegistration._id}`,
+        data: { _id, name, email },
+      });
+    } catch (error) {
+      console.error("Error occured with message :", error);
+
+      objErr.status = 500;
+      objErr.message = error.message;
+      return handleError(req, res, objErr);
+    }
+  },
   userRegister: async (req, res) => {
     try {
       const hasPass = await hashPassword(req.body.password);
       const genToken = await generateToken(req.body);
-      
+
       //Check if email already used
       const userCheckEmail = await UserModel.findOne({ email: req.body.email });
 
@@ -84,7 +136,6 @@ module.exports = {
     const { id } = req.params;
 
     try {
-
       const result = await UserModel.updateOne(
         { _id: objectId(id) },
         {

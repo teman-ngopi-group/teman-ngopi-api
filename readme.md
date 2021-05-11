@@ -83,6 +83,7 @@ After the apps running is succesfully, we can start by calling routes. For examp
 
 | Path              | Method | Description                            |
 | :---              | :---:  | :---                                   |
+| /test/admin       | POST   | Create first user account with role 'admin', so we can use this user for executing all CRUD operation |
 | /users            | GET    | Show all user that has been registered |
 | /user/:id         | GET    | Show one specific user by id           |
 | /add/user/        | POST   | Create user                            |
@@ -107,6 +108,14 @@ After the apps running is succesfully, we can start by calling routes. For examp
     ![Alt text](./src/assets/img/1.2-login.png "Calling '/login' route")
 
 #### 2. CRUD Operation
+
+* ##### Create first account with role 'admin'
+
+    * Access URL : /api/profile/test/admin
+    * Method     : POST
+    * Additional : All of these user credential test is executing from .env file, so we have to put the test account credential into .env files
+    * Example success response :
+    ![Alt text](./src/assets/img/1.2-testadmin.png "Calling '/test/admin' route")
 
 * ##### Show all users list
 
