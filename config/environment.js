@@ -1,14 +1,23 @@
 require("dotenv").config();
 
+switch (process.env.ENV) {
+  case "development":
+    hostDB = process.env.HOST_DB_DEV
+    break;
+  case "testing":
+    hostDB = process.env.HOST_DB_TEST
+    break;
+  case "production":
+    hostDB = process.env.HOST_DB_PROD
+    break;
+  default:
+    throw new Error("ENV confoguration was not defined!");
+}
+
 module.exports = {
   //env connection and jwt
   PORT: process.env.PORT,
-  HOST_DB: process.env.HOST_DB,
-  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
-  //env user test credential
-  TEST_ADMIN_NAME: process.env.TEST_ADMIN_NAME,
-  TEST_ADMIN_PSW: process.env.TEST_ADMIN_PSW,
-  TEST_ADMIN_EMAIL: process.env.TEST_ADMIN_EMAIL,
-  TEST_ADMIN_PHONENUMBER: process.env.TEST_ADMIN_PHONENUMBER,
-  TEST_ADMIN_ROLE: process.env.TEST_ADMIN_ROLE,
+  HOST_DB: hostDB,
+  ENV: process.env.ENV,
+  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY
 };

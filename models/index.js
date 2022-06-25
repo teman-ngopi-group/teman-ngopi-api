@@ -1,5 +1,7 @@
-const UserModel = require("./UsersAccount");
+const UserModel = require("./User");
+const AdminModel = require("./Admin");
+const TokenModel = require("./Token");
 
 module.exports = {
-  UserModel,
+  UserModel, AdminModel, TokenModel
 };

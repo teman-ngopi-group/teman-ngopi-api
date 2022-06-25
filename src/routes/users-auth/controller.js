@@ -1,7 +1,16 @@
 const { UserModel } = require("../../../models");
-const { comparedPassword } = require("../../../helpers");
+const { 
+  comparedPassword, 
+  errorResponse,
+  errorParams,
+  successResponse, 
+  hashPassword, 
+  generateToken 
+} = require("../../../helpers");
+const status = require("http-status");
+const { validationResult } = require("express-validator");
 
-let objErr = {};
+let result = {};
 
 module.exports = {
   userLogin: async (req, res) => {
@@ -9,10 +18,13 @@ module.exports = {
       await UserModel.findOne({
         email: req.body.email,
       }).then(async (user) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) return errorParams(req, res, errors.array());
+
         if (!user) {
-          objErr.status = 404;
-          objErr.message = `User with email ${req.body.email} not found`;
-          return handleError(req, res, objErr);
+          result.status = status.BAD_REQUEST;
+          result.message = `User with email ${req.body.email} not found`;
+          return errorResponse(req, res, result);
         }
 
         const comparePass = await comparedPassword(
@@ -21,40 +33,68 @@ module.exports = {
         );
 
         if (!comparePass) {
-          objErr.status = 401;
-          objErr.message = "The password that entered was incorrect";
-          return handleError(req, res, objErr);
+          result.status = status.UNAUTHORIZED;
+          result.message = "The password that entered was incorrect";
+          return errorResponse(req, res, result);
         }
 
         //Successfully validation
-        const { name, email, token } = user;
+        const { full_name, email, token } = user;
 
-        return res.status(200).json({
-          status: 200,
+        result = {
+          status: status.OK,
           message: "Login succesfully",
-          data: { name, email, token },
-        });
+          data: { full_name, email, token },
+        }
+
+        return successResponse(req, res, status.OK, result)
       });
     } catch (error) {
-      console.error("Error occured with message :", error);
+      return errorHandle(req, res, error);
+    }
+  },
+  userRegister: async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) return errorParams(req, res, errors.array());
 
-      objErr.status = 500;
-      objErr.message = error.message;
-      return handleError(req, res, objErr);
+      //Check if email already used
+      const userCheckEmail = await UserModel.findOne({ email: req.body.email });
+
+      if (userCheckEmail) {
+        result.status = status.BAD_REQUEST;
+        result.message = `User with email ${req.body.email} already used`;
+        return errorResponse(req, res, result);
+      }
+
+      const payloadGenToken = {...req.body, role: 'user'};
+      const hasPass = await hashPassword(req.body.password);
+      const genToken = await generateToken(payloadGenToken);
+
+      //Continue registration process
+      const userRegistration = await UserModel.create({
+        ...req.body,
+        password: hasPass,
+        token: genToken,
+      });
+      const { _id, full_name, email } = userRegistration;
+
+      result = { 
+        data: { _id, full_name, email }, 
+        message: `User successfully created with id ${userRegistration._id}`
+      };
+
+      return successResponse(req, res, status.CREATED, result)
+    } catch (error) {
+      return errorHandle(req, res, error);
     }
   },
 };
 
-const handleError = (req, res, objErr) => {
-  let timestamp = new Date();
+const errorHandle = (req, res, error) => {
+  console.error("Error occured with message :", error);
 
-  res
-    .status(objErr.status)
-    .json({
-      timestamp: timestamp,
-      status: objErr.status,
-      message: objErr.message,
-      path: req.originalUrl,
-    })
-    .end();
+  result.status = status.INTERNAL_SERVER_ERROR;
+  result.message = error.message;
+  return errorResponse(req, res, result);
 };

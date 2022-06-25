@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const roles = {
-  Admin: "admin",
-  User: "user",
-};
+const gender = {
+  MALE: "male",
+  FEMALE: "female"
+}
 
-const usersAcctSchema = new Schema({
-  name: {
+const usersSchema = new Schema({
+  full_name: {
     type: String,
     required: true,
   },
@@ -15,15 +15,15 @@ const usersAcctSchema = new Schema({
     type: String,
     required: true,
   },
-  token: {
-    type: String,
-    required: true,
-  },
   password: {
     type: String,
     required: true,
   },
-  phoneNumber: {
+  token: {
+    type: String,
+    required: true,
+  },
+  phone: {
     type: String,
     validate: {
       validator: function (v) {
@@ -31,22 +31,29 @@ const usersAcctSchema = new Schema({
       },
       message: (props) => `${props.value} is not valid phone number`,
     },
-    required: true,
   },
-  role: {
+  dob: {
+    type: Date,
+  },
+  gender: {
     type: String,
     required: true,
     enum: {
-      values: [roles.Admin, roles.User],
-      message: "Please select admin or user"
+      values: [gender.MALE, gender.FEMALE],
+      message: "Please select gender male or female"
     }
   },
-  created_at: {
-    type: Date,
-    default: Date.now,
+  is_active: {
+    type: Boolean,
+    default: false,
   },
+  address: {
+    type: String,
+  }
+}, {
+  timestamps: true
 });
 
-const UsersModel = mongoose.model("users_accts", usersAcctSchema);
+const UsersModel = mongoose.model("users", usersSchema);
 
 module.exports = UsersModel;
