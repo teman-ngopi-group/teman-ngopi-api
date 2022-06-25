@@ -3,19 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
-  "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
-    "test": "jest",
-    "jest": {
-      "testEnvironment": "node",
-      "coveragePathIgnorePatterns": [
-        "/node_modules/"
-      ]
-    }
+  "directories": {
+    "test": "tests"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
@@ -34,5 +24,20 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
-  }
+  },
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teman-ngopi-group/teman-ngopi-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/teman-ngopi-group/teman-ngopi-api/issues"
+  },
+  "homepage": "https://github.com/teman-ngopi-group/teman-ngopi-api#readme"
 }
