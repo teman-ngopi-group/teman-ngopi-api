@@ -12,7 +12,7 @@ const gender = {
 }
 
 const admminSchema = new Schema({
-    fullname: {
+    full_name: {
         type: String,
         required: true
     },
