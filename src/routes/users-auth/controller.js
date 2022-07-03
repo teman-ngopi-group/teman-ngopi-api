@@ -2,6 +2,7 @@ const { UserModel } = require("../../../models");
 const { 
   comparedPassword, 
   errorResponse,
+  errorInternalHandle,
   errorParams,
   successResponse, 
   hashPassword, 
@@ -50,7 +51,7 @@ module.exports = {
         return successResponse(req, res, status.OK, result)
       });
     } catch (error) {
-      return errorHandle(req, res, error);
+      return errorInternalHandle(req, res, error);
     }
   },
   userRegister: async (req, res) => {
@@ -84,17 +85,9 @@ module.exports = {
         message: `User successfully created with id ${userRegistration._id}`
       };
 
-      return successResponse(req, res, status.CREATED, result)
+      return errorInternalHandle(req, res, status.CREATED, result)
     } catch (error) {
       return errorHandle(req, res, error);
     }
   },
-};
-
-const errorHandle = (req, res, error) => {
-  console.error("Error occured with message :", error);
-
-  result.status = status.INTERNAL_SERVER_ERROR;
-  result.message = error.message;
-  return errorResponse(req, res, result);
 };

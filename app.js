@@ -15,6 +15,7 @@ app.use("/", require("./src/routes"));
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerJsdoc));
 app.use("/api/auth", require("./src/routes/users-auth"));
 app.use("/api/token", require("./src/routes/token"));
+app.use("/api/admin", require("./src/routes/events"));
 
 app.use("*", require("./src/routes/notfound"));
 

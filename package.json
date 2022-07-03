@@ -6,7 +6,10 @@
   "directories": {
     "test": "tests"
   },
-  "engines": { "node": "16.14.0", "npm": "8.3.1" },
+  "engines": {
+    "node": "16.14.0",
+    "npm": "8.3.1"
+  },
   "dependencies": {
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
@@ -17,6 +20,7 @@
     "http-status": "^1.5.2",
     "jest": "^26.6.3",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.3",
     "mongoose": "^5.12.7",
     "node-cron": "^3.0.1",
     "supertest": "^6.1.3",

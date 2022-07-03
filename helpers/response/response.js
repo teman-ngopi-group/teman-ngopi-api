@@ -1,14 +1,13 @@
 const status = require("http-status");
 
-const successResponse = (req, res, statusCode, result) => {
-    res
-      .status(statusCode)
-      .json({
-          status: statusCode,
-          message: result.message,
-          data: result.data
-      })
-      .end();
+const errorInternalHandle = (req, res, error) => {
+    console.error("Error occured with message :", error);
+
+    const result = {
+        status: status.INTERNAL_SERVER_ERROR,
+        message: error.message
+    }
+    return errorResponse(req, res, result);
 };
 
 const errorResponse = (req, res, objError) => {
@@ -32,8 +31,20 @@ const errorParams = (req, res, requiredFields) => {
       })
 }
 
+const successResponse = (req, res, statusCode, result) => {
+    res
+      .status(statusCode)
+      .json({
+          status: statusCode,
+          message: result.message,
+          data: result.data
+      })
+      .end();
+};
+
 module.exports = {
     successResponse: successResponse,
     errorResponse: errorResponse,
     errorParams: errorParams,
+    errorInternalHandle: errorInternalHandle
 }
