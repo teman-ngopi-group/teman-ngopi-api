@@ -10,6 +10,15 @@ const errorInternalHandle = (req, res, error) => {
     return errorResponse(req, res, result);
 };
 
+const errorNotFoundHandle = (req, res) => {
+    const objError = {
+        status: status.NOT_FOUND,
+        message: "Route not found"
+    };
+
+    return errorResponse(req, res, objError);
+};
+
 const errorResponse = (req, res, objError) => {
     res
       .status(objError.status)
@@ -42,9 +51,4 @@ const successResponse = (req, res, statusCode, result) => {
       .end();
 };
 
-module.exports = {
-    successResponse: successResponse,
-    errorResponse: errorResponse,
-    errorParams: errorParams,
-    errorInternalHandle: errorInternalHandle
-}
+module.exports = { successResponse, errorResponse, errorParams, errorInternalHandle, errorNotFoundHandle };

@@ -1,5 +1,5 @@
-const { EventPicModel } = require("../../../models");
-const { errorResponse, errorInternalHandle, errorParams, successResponse } =  require("../../../helpers")
+const { EventTypeModel } = require("../../../models");
+const { errorResponse, errorInternalHandle, errorParams, successResponse } =  require("../../../helpers");
 const status = require("http-status");
 const objectId = require("mongodb").ObjectId;
 const { validationResult } = require("express-validator");
@@ -8,53 +8,46 @@ const moment = require("moment");
 let result = {};
 
 module.exports = {
-    createEventPic: async (req, res) => {
+    createEventType: async (req, res) => {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) return errorParams(req, res, errors.array());
 
-            const currentPic = await EventPicModel.findOne({ email: req.body.email, is_deleted: false });
-            if (currentPic) {
-                result.status = status.BAD_REQUEST;
-                result.message = `PIC with email ${req.body.email} already registered!`;
-                return errorResponse(req, res, result)
-            }
-
-            const createEventPic = await EventPicModel.create(req.body);
-            const { full_name, email } = createEventPic;
+            const createEventType = await EventTypeModel.create(req.body);
+            const { name } = createEventType;
 
             result = {
-                data: { full_name, email },
-                message: "Event PIC successfully created"
+                data: { name },
+                message: "Event Type successfully created"
             }
             return successResponse(req, res, status.CREATED, result);
         } catch (error) {
             return errorInternalHandle(req, res, error);
         }
     },
-    modifyEventPic: async (req, res) => {
+    modifyEventType: async (req, res) => {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) return errorParams(req, res, errors.array());
 
-            const currentPic = await EventPicModel.findById(req.params.eventPicID);
-            if (!currentPic) {
+            const { eventTypeID } = req.params;
+            const currentType = await EventTypeModel.findById(eventTypeID);
+            
+            if (!currentType) {
                 result.status = status.BAD_REQUEST;
-                result.message = `PIC with id ${eventPicID} not found!`;
+                result.message = `Event Type with id ${eventTypeID} not found!`;
                 return errorResponse(req, res, result)
             }
 
-            await EventPicModel.updateOne({ _id: objectId(req.params.eventPicID) }, { $set: req.body });
+            await EventTypeModel.updateOne({ _id: objectId(eventTypeID) }, { $set: req.body });
 
-            result = {
-                message: "Event PIC successfully modified"
-            }
+            result = { message: "Event Type successfully modified" };
             return successResponse(req, res, status.OK, result);
         } catch (error) {
             return errorInternalHandle(req, res, error);
         }
     },
-    findAllEventPic: async (req, res) => {
+    findAllEventType: async (req, res) => {
         try {
             let query = { is_deleted: false };
             let take = 10, skip = 0, total = 0
@@ -66,8 +59,8 @@ module.exports = {
                 if (req.query.skip) 
                     skip = parseInt(req.query.skip);
 
-                if (req.query.full_name)
-                    query.full_name = { $regex: req.query.full_name, $options: 'i' };
+                if (req.query.name)
+                    query.name = { $regex: req.query.name, $options: 'i' };
 
                 if (req.query.fromCreatedDate && req.query.toCreatedDate) {
                     query.createdAt = { 
@@ -77,14 +70,14 @@ module.exports = {
                 }
             }
 
-            const eventPics = await EventPicModel.aggregate([
+            const eventTypes = await EventTypeModel.aggregate([
                 { $match: query},
                 {
                     $facet: {
                         data: [
                             { $skip: skip },
                             { $limit: take },
-                            { $sort: { createdAt: -1 } },
+                            { $sort: { updatedAt: -1 } },
                             { $project: { '__v': 0 } }
                         ],
                         pages: [
@@ -94,15 +87,15 @@ module.exports = {
                 }
             ]);
 
-            let result = eventPics[0].data
-            let pages = eventPics[0].pages
+            let result = eventTypes[0].data
+            let pages = eventTypes[0].pages
 
             if (pages.length)
                 total = pages[0].total
 
             result = {
                 data: { total, take, skip, result },
-                message: "Successfully show Event Pics data"
+                message: "Successfully show Event Types data"
             }
 
             return successResponse(req, res, status.OK, result);
@@ -110,21 +103,21 @@ module.exports = {
             return errorInternalHandle(req, res, error);
         }
     },
-    deleteEventPic: async (req, res) => {
+    deleteEventType: async (req, res) => {
         try {
-            const { eventPicID } = req.params;
-            const currentEventPic = await EventPicModel.findById(eventPicID);
+            const { eventTypeID } = req.params;
+            const currentEventType = await EventTypeModel.findById(eventTypeID);
 
-            if (!currentEventPic) {
+            if (!currentEventType) {
                 result.status = status.BAD_REQUEST;
-                result.message = `PIC with id: ${eventPicID} not found!`;
+                result.message = `Event Type with id: ${eventTypeID} not found!`;
                 return errorResponse(req, res, result)
             }
 
-            await EventPicModel.updateOne({ _id: objectId(eventPicID) }, { $set: { is_deleted: true } });
+            await EventTypeModel.updateOne({ _id: objectId(eventTypeID) }, { $set: { is_deleted: true } });
 
             result = {
-                message: `Event PIC successfully deleted`
+                message: `Event Type successfully deleted`
             }
 
             return successResponse(req, res, status.OK, result);

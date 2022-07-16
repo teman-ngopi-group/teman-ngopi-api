@@ -16,11 +16,12 @@ let result = {};
 module.exports = {
   userLogin: async (req, res) => {
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) return errorParams(req, res, errors.array());
+      
       await UserModel.findOne({
         email: req.body.email,
       }).then(async (user) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) return errorParams(req, res, errors.array());
 
         if (!user) {
           result.status = status.BAD_REQUEST;
