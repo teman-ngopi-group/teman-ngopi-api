@@ -1,12 +1,12 @@
 const { UserModel } =  require("../../../models");
-const { errorResponse, errorInternalHandle, successResponse } =  require("../../../helpers")
+const { errorResponse, successResponse } =  require("../../../helpers")
 const status = require("http-status");
 const objectId = require("mongodb").ObjectId;
 
 let result = {};
 
 module.exports = {
-    tokenVerify: async (req, res) => {
+    tokenVerify: async (req, res, next) => {
         try {
             const { userId } = req.params;
             const currentUser = await UserModel.findById(userId);
@@ -32,7 +32,7 @@ module.exports = {
 
             return successResponse(req, res, status.OK, result);
         } catch (error) {
-            return errorInternalHandle(req, res, error);
+            next(error);
         }
     }
 };

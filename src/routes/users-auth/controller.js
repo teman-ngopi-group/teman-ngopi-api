@@ -2,7 +2,6 @@ const { UserModel } = require("../../../models");
 const { 
   comparedPassword, 
   errorResponse,
-  errorInternalHandle,
   errorParams,
   successResponse, 
   hashPassword, 
@@ -14,7 +13,7 @@ const { validationResult } = require("express-validator");
 let result = {};
 
 module.exports = {
-  userLogin: async (req, res) => {
+  userLogin: async (req, res, next) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) return errorParams(req, res, errors.array());
@@ -52,10 +51,10 @@ module.exports = {
         return successResponse(req, res, status.OK, result)
       });
     } catch (error) {
-      return errorInternalHandle(req, res, error);
+      next(error);
     }
   },
-  userRegister: async (req, res) => {
+  userRegister: async (req, res, next) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) return errorParams(req, res, errors.array());
@@ -83,12 +82,12 @@ module.exports = {
 
       result = { 
         data: { _id, full_name, email }, 
-        message: `User successfully created with id ${userRegistration._id}`
+        message: "User successfully created"
       };
 
-      return errorInternalHandle(req, res, status.CREATED, result)
+      return successResponse(req, res, status.CREATED, result)
     } catch (error) {
-      return errorHandle(req, res, error);
+      next(error);
     }
   },
 };

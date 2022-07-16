@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("./swagger.json");
-const { errorNotFoundHandle } = require("./helpers")
+const { errorNotFoundHandle, errorInternalHandle } = require("./helpers")
 const { PORT, connectDB } = require("./config");
 
 const app = express();
@@ -22,9 +22,18 @@ app.use(
   require("./src/routes/event-types")
 );
 
+// Not found handle
 app.get('*', function(req, res) {
   return errorNotFoundHandle(req, res);
 });
+
+// Error internal handle
+app.use((error, req, res, next) => {
+  console.log("Error Handling Middleware called");
+  console.log('Path: ', req.path);
+
+  return errorInternalHandle(req, res, error);
+})
 
 if (connectDB) {
   module.exports = app.listen(PORT, () => {

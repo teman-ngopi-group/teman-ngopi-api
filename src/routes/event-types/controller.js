@@ -1,5 +1,5 @@
 const { EventTypeModel } = require("../../../models");
-const { errorResponse, errorInternalHandle, errorParams, successResponse } =  require("../../../helpers");
+const { errorResponse, errorParams, successResponse } =  require("../../../helpers");
 const status = require("http-status");
 const objectId = require("mongodb").ObjectId;
 const { validationResult } = require("express-validator");
@@ -8,7 +8,7 @@ const moment = require("moment");
 let result = {};
 
 module.exports = {
-    createEventType: async (req, res) => {
+    createEventType: async (req, res, next) => {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) return errorParams(req, res, errors.array());
@@ -22,10 +22,10 @@ module.exports = {
             }
             return successResponse(req, res, status.CREATED, result);
         } catch (error) {
-            return errorInternalHandle(req, res, error);
+            next(error);
         }
     },
-    modifyEventType: async (req, res) => {
+    modifyEventType: async (req, res, next) => {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) return errorParams(req, res, errors.array());
@@ -44,10 +44,10 @@ module.exports = {
             result = { message: "Event Type successfully modified" };
             return successResponse(req, res, status.OK, result);
         } catch (error) {
-            return errorInternalHandle(req, res, error);
+            next(error);
         }
     },
-    findAllEventType: async (req, res) => {
+    findAllEventType: async (req, res, next) => {
         try {
             let query = { is_deleted: false };
             let take = 10, skip = 0, total = 0
@@ -100,10 +100,10 @@ module.exports = {
 
             return successResponse(req, res, status.OK, result);
         } catch (error) {
-            return errorInternalHandle(req, res, error);
+            next(error);
         }
     },
-    deleteEventType: async (req, res) => {
+    deleteEventType: async (req, res, next) => {
         try {
             const { eventTypeID } = req.params;
             const currentEventType = await EventTypeModel.findById(eventTypeID);
@@ -122,7 +122,7 @@ module.exports = {
 
             return successResponse(req, res, status.OK, result);
         } catch (error) {
-            return errorInternalHandle(req, res, error);
+            next(error);
         }
     }
 };

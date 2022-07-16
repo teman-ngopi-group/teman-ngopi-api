@@ -8,7 +8,7 @@ const moment = require("moment");
 let result = {};
 
 module.exports = {
-    createEventPic: async (req, res) => {
+    createEventPic: async (req, res, next) => {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) return errorParams(req, res, errors.array());
@@ -29,10 +29,10 @@ module.exports = {
             }
             return successResponse(req, res, status.CREATED, result);
         } catch (error) {
-            return errorInternalHandle(req, res, error);
+            next(error);
         }
     },
-    modifyEventPic: async (req, res) => {
+    modifyEventPic: async (req, res, next) => {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) return errorParams(req, res, errors.array());
@@ -51,10 +51,10 @@ module.exports = {
             }
             return successResponse(req, res, status.OK, result);
         } catch (error) {
-            return errorInternalHandle(req, res, error);
+            next(error);
         }
     },
-    findAllEventPic: async (req, res) => {
+    findAllEventPic: async (req, res, next) => {
         try {
             let query = { is_deleted: false };
             let take = 10, skip = 0, total = 0
@@ -107,10 +107,10 @@ module.exports = {
 
             return successResponse(req, res, status.OK, result);
         } catch (error) {
-            return errorInternalHandle(req, res, error);
+            next(error);
         }
     },
-    deleteEventPic: async (req, res) => {
+    deleteEventPic: async (req, res, next) => {
         try {
             const { eventPicID } = req.params;
             const currentEventPic = await EventPicModel.findById(eventPicID);
@@ -129,7 +129,7 @@ module.exports = {
 
             return successResponse(req, res, status.OK, result);
         } catch (error) {
-            return errorInternalHandle(req, res, error);
+            next(error);
         }
     }
 };
