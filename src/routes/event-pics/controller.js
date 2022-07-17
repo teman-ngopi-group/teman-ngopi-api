@@ -1,5 +1,5 @@
 const { EventPicModel } = require("../../../models");
-const { errorResponse, errorInternalHandle, errorParams, successResponse } =  require("../../../helpers")
+const { errorResponse, errorParams, successResponse } =  require("../../../helpers")
 const status = require("http-status");
 const objectId = require("mongodb").ObjectId;
 const { validationResult } = require("express-validator");
@@ -17,7 +17,7 @@ module.exports = {
             if (currentPic) {
                 result.status = status.BAD_REQUEST;
                 result.message = `PIC with email ${req.body.email} already registered!`;
-                return errorResponse(req, res, result)
+                return errorResponse(req, res, result);
             }
 
             const createEventPic = await EventPicModel.create(req.body);

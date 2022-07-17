@@ -1,5 +1,27 @@
 const status = require("http-status");
 
+const errorMiddlewareHandle = (req, res, next, error) => {
+    console.log("Middleware user called, with errors: ", error);
+
+    let errorMsg = error.message, result = {};
+    
+    switch (String(errorMsg).toLowerCase()) {
+        case "jwt must be provided":
+            result.status = status.UNAUTHORIZED;
+            result.message = "User's token is mandatory, please insert the token first";
+            break;
+        case "invalid signature":
+        case "jwt malformed":
+            result.status = status.BAD_REQUEST;
+            result.message = "Please insert a correct token!";
+            break;
+        default:
+            next(error);
+    }
+
+    return errorResponse(req, res, result);
+};
+
 const errorInternalHandle = (req, res, error) => {
     console.error("Error occured with message :", error);
 
@@ -51,4 +73,4 @@ const successResponse = (req, res, statusCode, result) => {
       .end();
 };
 
-module.exports = { successResponse, errorResponse, errorParams, errorInternalHandle, errorNotFoundHandle };
+module.exports = { successResponse, errorResponse, errorParams, errorInternalHandle, errorNotFoundHandle, errorMiddlewareHandle };
