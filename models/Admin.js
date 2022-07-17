@@ -52,8 +52,8 @@ const admminSchema = new Schema({
     role: {
         type: String,
         enum: {
-        values: [role.ADMIN, role.SUPER_ADMIN],
-        message: "Please select role admin or super_admin"
+            values: [role.ADMIN, role.SUPER_ADMIN],
+            message: "Please select role admin or super_admin"
         }
     }
 }, { timestamps: true});

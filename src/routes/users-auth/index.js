@@ -20,11 +20,13 @@ router.post("/admin/login",
     [
         checkBody("email").isString().withMessage('email must be filled and type is string!'),
         checkBody("password").isString().withMessage('password must be filled and type is string!')
-    ], controller.userLogin);
+    ], controller.adminLogin);
 router.post("/admin/register",
     [
-        checkBody("email").isString().withMessage('email must be filled and type is string!'), 
+        checkBody("full_name").isString().withMessage('full_name must be filled and type is string!'),
+        checkBody("gender").isString().withMessage('gender must be filled and type is string!'),
+        checkBody("email").isString().withMessage('email must be filled and type is string!'),
         checkBody("password").isString().withMessage('password must be filled and type is string!')
-    ], controller.userRegister);
+    ], controller.adminRegister);
 
 module.exports = router;
