@@ -1,7 +1,7 @@
 const { UserModel, AdminModel } = require("../models");
 
 const { JWT_SECRET_KEY } = require("../config");
-const { errorResponse, errorMiddlewareHandle } = require("../helpers");
+const { errorResponse, errorMiddlewareHandle, plainCipherToken } = require("../helpers");
 const jwt = require("jsonwebtoken");
 const status = require("http-status");
 
@@ -10,12 +10,12 @@ let result = {};
 module.exports = {
     authenticationGeneral: async (req, res, next) => {
         try {
-            const tokenHeader = req.headers["authorization"];
-            const findUserToken = await UserModel.findOne({ token: tokenHeader });
+            const plainToken = plainCipherToken(req.headers["authorization"]);
+            const findUserToken = await UserModel.findOne({ token: plainToken });
 
-            jwt.verify(tokenHeader, JWT_SECRET_KEY);
+            jwt.verify(plainToken, JWT_SECRET_KEY);
 
-            if (!findUserToken || findUserToken.token != tokenHeader) {
+            if (!findUserToken || findUserToken.token != plainToken) {
                 result.status = status.UNAUTHORIZED;
                 result.message = "Token is not match with any users";
                 return errorResponse(req, res, result);
@@ -28,12 +28,12 @@ module.exports = {
     },
     authenticationAdmin: async (req, res, next) => {
         try {
-            const tokenHeader = req.headers["authorization"];
-            const findUserToken = await AdminModel.findOne({ token: tokenHeader });
+            const plainToken = plainCipherToken(req.headers["authorization"]);
+            const findUserToken = await AdminModel.findOne({ token: plainToken });
 
-            const tokenHashed = jwt.verify(tokenHeader, JWT_SECRET_KEY);
+            const tokenHashed = jwt.verify(plainToken, JWT_SECRET_KEY);
 
-            if (!findUserToken || findUserToken.token != tokenHeader) {
+            if (!findUserToken || findUserToken.token != plainToken) {
                 result.status = status.UNAUTHORIZED;
                 result.message = "Token is not match with any users";
                 return errorResponse(req, res, result);

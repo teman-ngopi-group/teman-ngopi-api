@@ -19,5 +19,6 @@ module.exports = {
   PORT: process.env.PORT,
   HOST_DB: hostDB,
   ENV: process.env.ENV,
-  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY
+  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+  JWT_CRYPTO_KEY: process.env.JWT_CRYPTO_KEY
 };

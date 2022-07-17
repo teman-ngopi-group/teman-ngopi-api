@@ -5,7 +5,8 @@ const {
   errorParams,
   successResponse, 
   hashPassword, 
-  generateToken 
+  generateToken,
+  generateCipherToken
 } = require("../../../helpers");
 const status = require("http-status");
 const { validationResult } = require("express-validator");
@@ -18,10 +19,7 @@ module.exports = {
       const errors = validationResult(req);
       if (!errors.isEmpty()) return errorParams(req, res, errors.array());
       
-      await UserModel.findOne({
-        email: req.body.email,
-      }).then(async (user) => {
-
+      await UserModel.findOne({ email: req.body.email }).then(async (user) => {
         if (!user) {
           result.status = status.BAD_REQUEST;
           result.message = `User with email ${req.body.email} not found`;
@@ -40,12 +38,13 @@ module.exports = {
         }
 
         //Successfully validation
-        const { full_name, email, token } = user;
+        let { full_name, token } = user;
+        token = await generateCipherToken(token);
 
         result = {
           status: status.OK,
           message: "Login succesfully",
-          data: { full_name, email, token },
+          data: { full_name, token },
         }
 
         return successResponse(req, res, status.OK, result)

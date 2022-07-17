@@ -8,12 +8,13 @@ const errorMiddlewareHandle = (req, res, next, error) => {
     switch (String(errorMsg).toLowerCase()) {
         case "jwt must be provided":
             result.status = status.UNAUTHORIZED;
-            result.message = "User's token is mandatory, please insert the token first";
+            result.message = "User's token is mandatory, please insert the token correctly first";
             break;
         case "invalid signature":
         case "jwt malformed":
+        case "malformed utf-8 data":
             result.status = status.BAD_REQUEST;
-            result.message = "Please insert a correct token!";
+            result.message = "Token does not correct!";
             break;
         default:
             next(error);
